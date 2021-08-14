@@ -1,11 +1,12 @@
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Scanner;
 
 public class Main {
 
 	static ArrayList<Sensor> sensors = new ArrayList<>();
-	static int[] valueMap = new int[1000];
+	static HashMap<Integer, Integer> valueMap = new HashMap<>();
 	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
@@ -14,16 +15,18 @@ public class Main {
 		
 		for (int i=0;i<n;i++) {
 			int value = sc.nextInt();
-			valueMap[value]++;
+			if (valueMap.containsKey(value)) {
+				valueMap.put(value, valueMap.get(value)+1);
+			} else {
+				valueMap.put(value, 1);
+			}
 		}
 		
-		for (int i=0;i<valueMap.length;i++) {
-			if (valueMap[i]>0) {
-				Sensor sensor = new Sensor();
-				sensor.value=i;
-				sensor.count=valueMap[i];
-				sensors.add(sensor);
-			}
+		for (Integer value:valueMap.keySet()) {
+			Sensor sensor = new Sensor();
+			sensor.value=value;
+			sensor.count=valueMap.get(value);
+			sensors.add(sensor);
 		}
 		
 		Collections.sort(sensors, (x,y)->{ 
