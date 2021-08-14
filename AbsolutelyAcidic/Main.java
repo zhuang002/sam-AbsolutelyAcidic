@@ -5,6 +5,8 @@ import java.util.Scanner;
 public class Main {
 
 	static ArrayList<Sensor> sensors = new ArrayList<>();
+	static int[] valueMap = new int[1000];
+	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		Scanner sc = new Scanner(System.in);
@@ -12,14 +14,15 @@ public class Main {
 		
 		for (int i=0;i<n;i++) {
 			int value = sc.nextInt();
-			Sensor sensor = getSensorByValue(value);
-			if (sensor==null) {
-				sensor=new Sensor();
-				sensor.value = value;
-				sensor.count=1;
+			valueMap[value]++;
+		}
+		
+		for (int i=0;i<valueMap.length;i++) {
+			if (valueMap[i]>0) {
+				Sensor sensor = new Sensor();
+				sensor.value=i;
+				sensor.count=valueMap[i];
 				sensors.add(sensor);
-			} else {
-				sensor.count++;
 			}
 		}
 		
@@ -33,13 +36,13 @@ public class Main {
 		});
 		
 		int maxCount1 = sensors.get(0).count;
-		ArrayList<Sensor> maxSensors1 = getSensorsByCount(maxCount1);
+		ArrayList<Sensor> maxSensors1 = getSensorsByCount(0, maxCount1);
 		int result;
 		if (maxSensors1.size()>1) {
 			result=getMaxAbsoluteValueDifference(maxSensors1);
 		} else {
 			int maxCount2 = sensors.get(maxSensors1.size()).count;
-			ArrayList<Sensor> maxSensors2 = getSensorsByCount(maxCount2);
+			ArrayList<Sensor> maxSensors2 = getSensorsByCount(maxSensors1.size(), maxCount2);
 			if (maxSensors2.size()>1) {
 				result=getAbsoluteValueDifference(maxSensors1.get(0).value, maxSensors2);
 			} else {
@@ -64,10 +67,10 @@ public class Main {
 		return Math.abs(sensors.get(0).value - sensors.get(sensors.size()-1).value);
 	}
 
-	private static ArrayList<Sensor> getSensorsByCount(int count) {
+	private static ArrayList<Sensor> getSensorsByCount(int start, int count) {
 		// TODO Auto-generated method stub
 		ArrayList<Sensor> ret = new ArrayList<>();
-		for (int i=0;i<sensors.size();i++) {
+		for (int i=start;i<sensors.size();i++) {
 			Sensor sensor = sensors.get(i);
 			if (sensor.count == count) {
 				ret.add(sensor);
@@ -76,15 +79,6 @@ public class Main {
 			}
 		}
 		return ret;
-	}
-
-	private static Sensor getSensorByValue(int value) {
-		// TODO Auto-generated method stub
-		for (Sensor sensor:sensors) {
-			if (sensor.value == value)
-				return sensor;
-		}
-		return null;
 	}
 }
 
